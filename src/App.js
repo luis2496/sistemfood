@@ -1,25 +1,78 @@
-import logo from './logo.svg';
-import './App.css';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import MenuView from './components/MenuView';
+import ContactView from './components/ContactView';
+import Footer from './components/Footer';
+import SplashScreen from './components/SplashScreen';
+import useAppController from './controllers/useAppController';
+import './styles/App.css';
 
-function App() {
+export default function App() {
+  const {
+    isSplashVisible,
+    currentView,
+    cart,
+    cartCount,
+    orderDate,
+    orderTime,
+    orderNote,
+    setOrderDate,
+    setOrderTime,
+    setOrderNote,
+    handleEnterSite,
+    navigateTo,
+    handleOpenCart,
+    handleAddItem,
+    handleUpdateQty,
+    handleCancelOrder,
+    handlePrepareWhatsApp,
+  } = useAppController();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-layout">
+      {isSplashVisible && <SplashScreen onEnter={handleEnterSite} />}
+
+      {currentView !== 'contact' && (
+        <Navbar
+          cartCount={cartCount}
+          onNavigateHome={() => navigateTo('home')}
+          onNavigateMenu={() => navigateTo('menu')}
+          onNavigateContact={() => navigateTo('contact')}
+          onOpenCart={handleOpenCart}
+        />
+      )}
+
+      {currentView === 'home' && (
+        <Hero onExploreMenu={() => navigateTo('menu')} />
+      )}
+
+      {currentView === 'menu' && (
+        <MenuView
+          cart={cart}
+          orderDate={orderDate}
+          orderTime={orderTime}
+          orderNote={orderNote}
+          onOrderDateChange={setOrderDate}
+          onOrderTimeChange={setOrderTime}
+          onOrderNoteChange={setOrderNote}
+          onAddItem={handleAddItem}
+          onUpdateQty={handleUpdateQty}
+          onBackHome={() => navigateTo('home')}
+          onPrepareOrder={handlePrepareWhatsApp}
+          onCancelOrder={handleCancelOrder}
+        />
+      )}
+
+      {currentView === 'contact' && (
+        <ContactView
+          cartCount={cartCount}
+          onBackHome={() => navigateTo('home')}
+          onExploreMenu={() => navigateTo('menu')}
+          onOpenCart={handleOpenCart}
+        />
+      )}
+
+      <Footer />
     </div>
   );
 }
-
-export default App;
