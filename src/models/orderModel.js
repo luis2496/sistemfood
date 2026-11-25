@@ -23,7 +23,7 @@ export const buildOrderMessage = (
       const itemsLines = items
         .map(
           (item) =>
-            `* ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})`
+            `* ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})${item.note ? ` - ${item.note}` : ''}`
         )
         .join('\n');
       return `— ${category}\n${itemsLines}`;

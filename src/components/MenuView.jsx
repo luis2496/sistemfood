@@ -33,11 +33,13 @@ export default function MenuView({
   onOrderNoteChange,
   onAddItem,
   onUpdateQty,
+  onUpdateItemNote,
   onBackHome,
   onPrepareOrder,
   onCancelOrder,
 }) {
   const [activeProduct, setActiveProduct] = useState(null);
+  const [editingItemId, setEditingItemId] = useState(null);
 
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -63,6 +65,14 @@ export default function MenuView({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeProduct]);
+
+  useEffect(() => {
+    const now = new Date();
+    const date = now.toISOString().split('T')[0];
+    const time = now.toISOString().split('T')[1].substring(0, 5);
+    onOrderDateChange(date);
+    onOrderTimeChange(time);
+  }, [onOrderDateChange, onOrderTimeChange]);
 
   return (
     <main className="menu-page">
@@ -194,41 +204,92 @@ export default function MenuView({
                 </div>
               ) : (
                 <ul className="order-items-list">
-                  {cart.map((item) => (
-                    <li key={item.id} className="order-item-row">
-                      <div className="order-item-info">
-                        <span className="order-item-name">{item.name}</span>
-                        <span className="order-item-unit">
-                          {item.quantity} × {formatPrice(item.price)}
-                        </span>
-                      </div>
-                      <div className="order-item-actions">
-                        <span className="order-item-subtotal">
-                          {formatPrice(item.price * item.quantity)}
-                        </span>
-                        <button
-                          type="button"
-                          className="btn-remove-mini"
-                          onClick={() => onUpdateQty(item.id, 0)}
-                          title="Quitar producto"
-                          aria-label={`Quitar ${item.name} del pedido`}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </li>
-                  ))}
+                  {cart.map((item) => {
+                    const isEditing = editingItemId === item.id;
+
+                    return (
+                      <li key={item.id} className="order-item-row">
+                        <div className="order-item-header">
+                          <div className="order-item-info">
+                            <span className="order-item-name">{item.name}</span>
+                            <span className="order-item-unit">
+                              {item.quantity} × {formatPrice(item.price)}
+                            </span>
+                          </div>
+                          <div className="order-item-actions">
+                            <span className="order-item-subtotal">
+                              {formatPrice(item.price * item.quantity)}
+                            </span>
+                            <button
+                              type="button"
+                              className="btn-comment-item"
+                              onClick={() => setEditingItemId(item.id)}
+                              title="Agregar comentario"
+                              aria-label={`Agregar comentario a ${item.name}`}
+                            >
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                              >
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-remove-mini"
+                              onClick={() => onUpdateQty(item.id, 0)}
+                              title="Quitar producto"
+                              aria-label={`Quitar ${item.name} del pedido`}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+
+                        {isEditing && (
+                          <div className="order-item-note-field">
+                            <textarea
+                              id={`order-note-${item.id}`}
+                              className="order-input order-textarea"
+                              rows="2"
+                              placeholder="Ej.: sin cebolla, salsa aparte…"
+                              value={item.note || ''}
+                              onChange={(event) =>
+                                onUpdateItemNote(item.id, event.target.value)
+                              }
+                            />
+                            <button
+                              type="button"
+                              className="btn-save-note"
+                              onClick={() => setEditingItemId(null)}
+                            >
+                              Guardar
+                            </button>
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
 
               <div className="order-divider" />
 
-              <div className="order-total-row">
-                <span>Total estimado</span>
-                <strong className="order-total-amount">
-                  {formatPrice(totalAmount)}
-                </strong>
-              </div>
+              {cart.length > 0 && (
+                <>
+                  <div className="order-total-row">
+                    <span>Total estimado</span>
+                    <strong className="order-total-amount">
+                      {formatPrice(totalAmount)}
+                    </strong>
+                  </div>
+                </>
+              )}
 
               <div className="order-field">
                 <label htmlFor="order-date">Fecha del pedido</label>
@@ -237,7 +298,7 @@ export default function MenuView({
                   type="date"
                   className="order-input"
                   value={orderDate}
-                  onChange={(event) => onOrderDateChange(event.target.value)}
+                  readOnly
                 />
               </div>
 
@@ -248,19 +309,7 @@ export default function MenuView({
                   type="time"
                   className="order-input"
                   value={orderTime}
-                  onChange={(event) => onOrderTimeChange(event.target.value)}
-                />
-              </div>
-
-              <div className="order-field">
-                <label htmlFor="order-note">Descripción del pedido</label>
-                <textarea
-                  id="order-note"
-                  className="order-input order-textarea"
-                  rows="3"
-                  placeholder="Ej.: sin cebolla, salsa aparte, tocar el timbre…"
-                  value={orderNote}
-                  onChange={(event) => onOrderNoteChange(event.target.value)}
+                  readOnly
                 />
               </div>
 

@@ -4,6 +4,7 @@ import {
   getCartItemCount,
   getCartTotal,
   updateItemQuantity,
+  updateItemNote,
 } from '../models/cartModel';
 import { buildWhatsAppUrl } from '../models/orderModel';
 
@@ -41,6 +42,10 @@ export default function useAppController() {
 
   const handleUpdateQty = useCallback((productId, quantity) => {
     setCart((current) => updateItemQuantity(current, productId, quantity));
+  }, []);
+
+  const handleUpdateItemNote = useCallback((productId, note) => {
+    setCart((current) => updateItemNote(current, productId, note));
   }, []);
 
   const resetOrderDetails = useCallback(() => {
@@ -86,6 +91,7 @@ export default function useAppController() {
     handleOpenCart,
     handleAddItem,
     handleUpdateQty,
+    handleUpdateItemNote,
     handleCancelOrder,
     handlePrepareWhatsApp,
   };

@@ -4,6 +4,7 @@ export const createCartItem = (product = {}) => ({
   price: Number(product.price) || 0,
   quantity: Number(product.quantity) || 1,
   category: product.category ?? '',
+  note: product.note ?? '',
 });
 
 export const addItemToCart = (cart = [], product) => {
@@ -30,6 +31,11 @@ export const updateItemQuantity = (cart = [], productId, quantity) => {
     entry.id === productId ? { ...entry, quantity } : entry
   );
 };
+
+export const updateItemNote = (cart = [], productId, note) =>
+  cart.map((entry) =>
+    entry.id === productId ? { ...entry, note: note.trim() } : entry
+  );
 
 export const removeItemFromCart = (cart = [], productId) =>
   cart.filter((entry) => entry.id !== productId);

@@ -24,6 +24,7 @@ export default function App() {
     handleOpenCart,
     handleAddItem,
     handleUpdateQty,
+    handleUpdateItemNote,
     handleCancelOrder,
     handlePrepareWhatsApp,
   } = useAppController();
@@ -57,6 +58,7 @@ export default function App() {
           onOrderNoteChange={setOrderNote}
           onAddItem={handleAddItem}
           onUpdateQty={handleUpdateQty}
+          onUpdateItemNote={handleUpdateItemNote}
           onBackHome={() => navigateTo('home')}
           onPrepareOrder={handlePrepareWhatsApp}
           onCancelOrder={handleCancelOrder}
