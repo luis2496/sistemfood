@@ -289,7 +289,7 @@ export const MENU_CATEGORIES = [
       {
         id: 'combo-1',
         tag: 'Para compartir',
-        name: 'Combo Dúo Hamburgueza',
+        name: 'Dúo Hamburgueza',
         description:
           'Dos hamburguesas sencillas de carne, queso amarillo, lechuga , tomate, cebolla carameliza, papas ralladas y un refresco 400ml.',
         price: 5.6,
@@ -298,7 +298,7 @@ export const MENU_CATEGORIES = [
       {
         id: 'combo-2',
         tag: 'Para compartir',
-        name: 'Combo Dúo Hot dog',
+        name: 'Dúo Hot dog',
         description:
           'Dos perros sencillos pan pequeño , salchica completa, queso amarillo, queso de año, ensalada, papas ralladas y un refresco 400l.',
         price: 3.6,

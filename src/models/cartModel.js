@@ -34,7 +34,7 @@ export const updateItemQuantity = (cart = [], productId, quantity) => {
 
 export const updateItemNote = (cart = [], productId, note) =>
   cart.map((entry) =>
-    entry.id === productId ? { ...entry, note: note.trim() } : entry
+    entry.id === productId ? { ...entry, note } : entry
   );
 
 export const removeItemFromCart = (cart = [], productId) =>

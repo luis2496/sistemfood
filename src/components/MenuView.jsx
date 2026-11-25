@@ -30,7 +30,6 @@ export default function MenuView({
   orderNote,
   onOrderDateChange,
   onOrderTimeChange,
-  onOrderNoteChange,
   onAddItem,
   onUpdateQty,
   onUpdateItemNote,
@@ -68,8 +67,8 @@ export default function MenuView({
 
   useEffect(() => {
     const now = new Date();
-    const date = now.toISOString().split('T')[0];
-    const time = now.toISOString().split('T')[1].substring(0, 5);
+    const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     onOrderDateChange(date);
     onOrderTimeChange(time);
   }, [onOrderDateChange, onOrderTimeChange]);
@@ -262,6 +261,7 @@ export default function MenuView({
                               onChange={(event) =>
                                 onUpdateItemNote(item.id, event.target.value)
                               }
+                              onKeyDown={(e) => e.stopPropagation()}
                             />
                             <button
                               type="button"
@@ -299,6 +299,7 @@ export default function MenuView({
                   className="order-input"
                   value={orderDate}
                   readOnly
+                  onChange={(event) => onOrderDateChange(event.target.value)}
                 />
               </div>
 
@@ -310,6 +311,7 @@ export default function MenuView({
                   className="order-input"
                   value={orderTime}
                   readOnly
+                  onChange={(event) => onOrderTimeChange(event.target.value)}
                 />
               </div>
 

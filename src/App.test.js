@@ -45,9 +45,6 @@ test('navega al menú y agrega productos al pedido', () => {
   expect(
     screen.getByRole('button', { name: /preparar pedido en whatsapp/i })
   ).toBeEnabled();
-  expect(
-    screen.getByLabelText(/descripción del pedido/i)
-  ).toBeInTheDocument();
 });
 
 test('navega a la vista de contacto y vuelve al inicio', () => {
@@ -72,41 +69,37 @@ test('navega a la vista de contacto y vuelve al inicio', () => {
 const fillOrderDetails = () => {
   const dateInput = screen.getByLabelText(/fecha del pedido/i);
   const timeInput = screen.getByLabelText(/hora del pedido/i);
-  const noteInput = screen.getByLabelText(/descripción del pedido/i);
 
   fireEvent.change(dateInput, { target: { value: '2026-11-21' } });
   fireEvent.change(timeInput, { target: { value: '20:30' } });
-  fireEvent.change(noteInput, { target: { value: 'Sin cebolla, salsa aparte' } });
 
-  return { dateInput, timeInput, noteInput };
+  return { dateInput, timeInput };
 };
 
-test('cancelar el pedido limpia fecha, hora, descripción y carrito', () => {
+test('cancelar el pedido limpia fecha, hora y carrito', () => {
   render(<App />);
 
   userEvent.click(screen.getByRole('button', { name: /explorar el menú/i }));
   userEvent.click(screen.getAllByRole('button', { name: /añadir/i })[0]);
 
-  const { dateInput, timeInput, noteInput } = fillOrderDetails();
+  const { dateInput, timeInput } = fillOrderDetails();
 
   expect(dateInput).toHaveValue('2026-11-21');
-  expect(noteInput).toHaveValue('Sin cebolla, salsa aparte');
 
   userEvent.click(screen.getByRole('button', { name: /cancelar pedido/i }));
 
   expect(screen.getByText(/todavía no hay productos/i)).toBeInTheDocument();
   expect(dateInput).toHaveValue('');
   expect(timeInput).toHaveValue('');
-  expect(noteInput).toHaveValue('');
 });
 
-test('al enviar por WhatsApp también se limpian fecha, hora y descripción', () => {
+test('al enviar por WhatsApp también se limpian fecha y hora', () => {
   render(<App />);
 
   userEvent.click(screen.getByRole('button', { name: /explorar el menú/i }));
   userEvent.click(screen.getAllByRole('button', { name: /añadir/i })[0]);
 
-  const { dateInput, timeInput, noteInput } = fillOrderDetails();
+  const { dateInput, timeInput } = fillOrderDetails();
 
   userEvent.click(
     screen.getByRole('button', { name: /preparar pedido en whatsapp/i })
@@ -116,7 +109,6 @@ test('al enviar por WhatsApp también se limpian fecha, hora y descripción', ()
   expect(window.open.mock.calls[0][0]).toContain('https://wa.me/5804121473926');
   expect(dateInput).toHaveValue('');
   expect(timeInput).toHaveValue('');
-  expect(noteInput).toHaveValue('');
 });
 
 test('abre y cierra la vista previa de un producto', () => {
